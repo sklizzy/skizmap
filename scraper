@@ -1,0 +1,26 @@
+from bs4 import BeautifulSoup as bs
+import requests
+#import csv
+
+source = requests.get('http://liftie.info/resort/steamboat').text
+soup = bs(source, 'lxml')
+
+#csv_file = open('l_s.csv', 'w')
+
+#csv_writer = csv.writer(csv_file)
+#csv_writer.writerow(['lift_name', 'lift_status'])
+
+basics = soup.find('div', {'class': 'lifts-status'})
+#print(basics.prettify())
+
+
+for lift in soup.find_all('span', {'class': 'name'}):
+        lift_name = lift.text
+        print(lift_name)
+
+
+for lift_status in soup.find_all('span', {'class': 'status'}):
+        print(lift_status)
+        
+        #csv_writer.writerow([lift, lift_status])
+#csv_file.close()
