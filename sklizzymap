@@ -1,3 +1,4 @@
+#Draft at bottom Line 93
 #!/usr/bin/env python3
 
 import board
@@ -15,8 +16,9 @@ LED_ORDER			= neopixel.GRB			# Strip type and colour ordering
 #Set LED colors based on status
 COLOR_OPEN		    = (255,0,0)	 # Green
 COLOR_CLOSED		  = (0,255,0)	   # Red
-COLOR_HOLD		    = (0,175,255)		# Yellow
-COLOR_SCHEDULED		= (0,0,255)			  # Blue
+COLOR_HOLD		    = (0,175,255)    # Yellow
+COLOR_SCHEDULED		= (0,0,255)	       # Blue
+COLOR_CLEAR 		    = (255,255,255)	 #Clear
 
 # Initialize the LED strip
 pixels = neopixel.NeoPixel(LED_PIN, LED_COUNT, brightness = LED_BRIGHTNESS, pixel_order = LED_ORDER, auto_write = False)
@@ -34,15 +36,69 @@ for l_n in soup.find_all('span', {'class': 'name'}):
 for l_s in soup.find_all('span', {'class': 'status'}):
         lift_statuses = l_s
         #print(l_s)
-
-#store names and statuses in a csv or dict/json
-
-      #Iterate through lift name list 
-      #names linked to appropriate status
-      #if status str() matches certain status update led to status_color
 	
-      # For line in LineObject ??
+	
+# Initializing LED setting
+looplimit = int(round(BLINK_TOTALTIME_SECONDS / BLINK_SPEED)) if (ACTIVATE_WINDCONDITION_ANIMATION or ACTIVATE_LIGHTNING_ANIMATION) else 1
+while looplimit > 0:
+	i = 0
+	for airportcode in airports:
+		# Skip NULL entries
+		if airportcode == "NULL":
+			i += 1
+			continue
 
+		color = COLOR_CLEAR
+		conditions = conditionDict.get(airportcode, None)
+		
+		if conditions != None:
+# Rough draft line search and LED assignment
+		with lift_statuses as s:
+    		for line i+1 in s:
+        		if "open" in line:
+        			color = COLOR_OPEN
+			elif "closed" in line:
+				color = COLOR_CLOSED
+			elif "hold" in line:
+				color = COLOR_HOLD
+			elif "scheduled" in line:
+				color = COLOR_SCHEDULED
+			else:
+				color = COLOR_CLEAR
+		print("Setting LED " + str(i) + " for " + lift_name + " to " + str(color))
+		pixels[i] = color
+		i += 1
+
+#Updates all LEDs at once
+	pixels.show()
+	
+print()
+print("done")
+
+
+								#store names and statuses in a csv or dict/json
+
+      									#Iterate through lift name list 
+      									#names linked to appropriate status
+      									#if status str() matches certain status update led to status_color
+	
+      									# For line in LineObject ??
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
 # Setting LED colors based on weather conditions
 looplimit = int(round(BLINK_TOTALTIME_SECONDS / BLINK_SPEED)) if (ACTIVATE_WINDCONDITION_ANIMATION or ACTIVATE_LIGHTNING_ANIMATION) else 1
 windCycle = False
@@ -87,3 +143,26 @@ while looplimit > 0:
 
 print()
 print("Done")
+
+#
+# Rough draft line search
+
+	with lift_statuses as s:
+    	for line i+1 in s:
+        	if "open" in line:
+        		color = COLOR_OPEN
+		elif "closed" in line:
+			color = COLOR_CLOSED
+		elif "hold" in line:
+			color = COLOR_HOLD
+		elif "scheduled" in line:
+			color = COLOR_SCHEDULED
+		else:
+			color = COLOR_CLEAR
+	print("Setting LED " + str(i) + " for " + lift_name + " to " + str(color))
+	pixels[i] = color
+	i += 1
+
+#Updates all LEDs at once
+pixels.show()
+
