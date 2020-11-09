@@ -1,168 +1,73 @@
-#Draft at bottom Line 93
 #!/usr/bin/env python3
 
 import board
 import neopixel
 import time
-import requests 
+import requests
 from bs4 import BeautifulSoup as BS
 
 # NeoPixel LED Configuration
-LED_COUNT			= 50				# Number of LED pixels.
-LED_PIN				= board.D18			# GPIO pin connected to the pixels (18 is PCM).
-LED_BRIGHTNESS			= 0.5				# Float from 0.0 (min) to 1.0 (max)
-LED_ORDER			= neopixel.GRB			# Strip type and colour ordering
+LED_COUNT                       = 50                            # Number of LED pixels.
+LED_PIN                         = board.D18                     # GPIO pin connected to the pixels (18 is PCM)
+LED_BRIGHTNESS                  = 0.5                           # Float from 0.0 (min) to 1.0 (max)
+LED_ORDER                       = neopixel.GRB                  # Strip type and colour ordering
 
 #Set LED colors based on status
-COLOR_OPEN		    = (255,0,0)	 # Green
-COLOR_CLOSED		  = (0,255,0)	   # Red
-COLOR_HOLD		    = (0,175,255)    # Yellow
-COLOR_SCHEDULED		= (0,0,255)	       # Blue
-COLOR_CLEAR 		    = (255,255,255)	 #Clear
+COLOR_OPEN                  = (255,0,0)  # Green
+COLOR_CLOSED              = (0,255,0)      # Red
+COLOR_HOLD                  = (0,175,255)    # Yellow
+COLOR_SCHEDULED         = (0,0,255)            # Blue
+COLOR_CLEAR                 = (255,255,255)      #Clear
 
 # Initialize the LED strip
-pixels = neopixel.NeoPixel(LED_PIN, LED_COUNT, brightness = LED_BRIGHTNESS, pixel_order = LED_ORDER, auto_write = False)
+pixels = neopixel.NeoPixel(LED_PIN, LED_COUNT, brightness = LED_BRIGHTNESS, pixel_order = LED_ORDER, auto_write = Fa$
 
 # Retrieve html from page of the resort
 source = requests.get('https://liftie.info/resort/steamboat').text
-soup = BeautifulSoup(source, 'lxml')
+soup = BS(source, 'lxml')
 
-# Retrieve names and statuses 
+# Retrieve names and statuses
 basics = soup.find('div', {'class': 'lifts-status'})
 ###print(basics.prettify())
 for l_n in soup.find_all('span', {'class': 'name'}):
-        lift_name = l_n.text
+        lift_names = l_n.text
         #print(l_n.text)
 for l_s in soup.find_all('span', {'class': 'status'}):
         lift_statuses = l_s
         #print(l_s)
-	
-	
-# Initializing LED setting
-looplimit = int(round(BLINK_TOTALTIME_SECONDS / BLINK_SPEED)) if (ACTIVATE_WINDCONDITION_ANIMATION or ACTIVATE_LIGHTNING_ANIMATION) else 1
-while looplimit > 0:
-	i = 0
-	for airportcode in airports:
-		# Skip NULL entries
-		if airportcode == "NULL":
-			i += 1
-			continue
 
-		color = COLOR_CLEAR
-		conditions = conditionDict.get(airportcode, None)
-		
-		if conditions != None:
+# Initializing LED setting
+i = 0
+#       for lift_n in lift_names:
+                # Skip NULL entries
+#               if lift_n == "NULL":
+#                       i = i + 1
+#                       continue
+
+#               color = COLOR_CLEAR
+
+                #if conditions != None:
 # Rough draft line search and LED assignment
-		with lift_statuses as s:
-    		for line i+1 in s:
-        		if "open" in line:
-        			color = COLOR_OPEN
-			elif "closed" in line:
-				color = COLOR_CLOSED
-			elif "hold" in line:
-				color = COLOR_HOLD
-			elif "scheduled" in line:
-				color = COLOR_SCHEDULED
-			else:
-				color = COLOR_CLEAR
-		print("Setting LED " + str(i) + " for " + lift_name + " to " + str(color))
-		pixels[i] = color
-		i += 1
+with lift_statuses as s:
+        for line in s:
+                if "open" in line:
+                        color = COLOR_OPEN
+                elif "closed" in line:
+                        color = COLOR_CLOSED
+                elif "hold" in line:
+                        color = COLOR_HOLD
+                elif "scheduled" in line:
+                        color = COLOR_SCHEDULED
+                else:
+                        color = COLOR_CLEAR
+        print("Setting LED " + str(i) + " for " + lift_name + " to " + str(color))
+        pixels[i] = color
+        i += 1
 
 #Updates all LEDs at once
-	pixels.show()
-	
+        pixels.show()
+
 print()
 print("done")
 
-
-								#store names and statuses in a csv or dict/json
-
-      									#Iterate through lift name list 
-      									#names linked to appropriate status
-      									#if status str() matches certain status update led to status_color
-	
-      									# For line in LineObject ??
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-# Setting LED colors based on weather conditions
-looplimit = int(round(BLINK_TOTALTIME_SECONDS / BLINK_SPEED)) if (ACTIVATE_WINDCONDITION_ANIMATION or ACTIVATE_LIGHTNING_ANIMATION) else 1
-windCycle = False
-while looplimit > 0:
-	i = 0
-	for airportcode in airports:
-		# Skip NULL entries
-		if airportcode == "NULL":
-			i += 1
-			continue
-
-		color = COLOR_CLEAR
-		conditions = conditionDict.get(airportcode, None)
-		windy = False
-		lightningConditions = False
-
-		if conditions != None:
-			windy = True if (ACTIVATE_WINDCONDITION_ANIMATION and windCycle == True and (conditions["windSpeed"] > WIND_BLINK_THRESHOLD or conditions["windGust"] == True)) else False
-			lightningConditions = True if (ACTIVATE_LIGHTNING_ANIMATION and windCycle == False and conditions["lightning"] == True) else False
-			if conditions["flightCategory"] == "VFR":
-				color = COLOR_VFR if not (windy or lightningConditions) else COLOR_LIGHTNING if lightningConditions else (COLOR_VFR_FADE if FADE_INSTEAD_OF_BLINK else COLOR_CLEAR) if windy else COLOR_CLEAR
-			elif conditions["flightCategory"] == "MVFR":
-				color = COLOR_MVFR if not (windy or lightningConditions) else COLOR_LIGHTNING if lightningConditions else (COLOR_MVFR_FADE if FADE_INSTEAD_OF_BLINK else COLOR_CLEAR) if windy else COLOR_CLEAR
-			elif conditions["flightCategory"] == "IFR":
-				color = COLOR_IFR if not (windy or lightningConditions) else COLOR_LIGHTNING if lightningConditions else (COLOR_IFR_FADE if FADE_INSTEAD_OF_BLINK else COLOR_CLEAR) if windy else COLOR_CLEAR
-			elif conditions["flightCategory"] == "LIFR":
-				color = COLOR_LIFR if not (windy or lightningConditions) else COLOR_LIGHTNING if lightningConditions else (COLOR_LIFR_FADE if FADE_INSTEAD_OF_BLINK else COLOR_CLEAR) if windy else COLOR_CLEAR
-			else:
-				color = COLOR_CLEAR
-
-		print("Setting LED " + str(i) + " for " + airportcode + " to " + ("lightning " if lightningConditions else "") + ("windy " if windy else "") + (conditions["flightCategory"] if conditions != None else "None") + " " + str(color))
-		pixels[i] = color
-		i += 1
-
-	# Update actual LEDs all at once
-	pixels.show()
-
-	# Switching between animation cycles
-	time.sleep(BLINK_SPEED)
-	windCycle = False if windCycle else True
-	looplimit -= 1
-
-print()
-print("Done")
-
-#
-# Rough draft line search
-
-	with lift_statuses as s:
-    	for line i+1 in s:
-        	if "open" in line:
-        		color = COLOR_OPEN
-		elif "closed" in line:
-			color = COLOR_CLOSED
-		elif "hold" in line:
-			color = COLOR_HOLD
-		elif "scheduled" in line:
-			color = COLOR_SCHEDULED
-		else:
-			color = COLOR_CLEAR
-	print("Setting LED " + str(i) + " for " + lift_name + " to " + str(color))
-	pixels[i] = color
-	i += 1
-
-#Updates all LEDs at once
-pixels.show()
-
+		
